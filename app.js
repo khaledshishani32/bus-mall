@@ -1,18 +1,22 @@
 
 'use strict'
 
-
+let imageDiv = document.getElementById('images-div');
 let leftImageElement = document.getElementById('left-image');
 let midImageElement = document.getElementById('mid-image');
 let rightImageElement = document.getElementById('right-image');
 
-let maxAttempts = 10;
+let maxAttempts = 20;
 let userAttemptsCounter = 0;
 
 
 let leftImageIndex;
 let midImageIndex;
 let rightImageIndex;
+
+let namesArr=[];
+let votesArr=[];
+let shownArr=[];
 
 
 function Product(name, source) {
@@ -67,24 +71,31 @@ function generateRandomIndex() {
 
 function renderThreeImages() {
 
-    
+
     leftImageIndex = generateRandomIndex();
     midImageIndex = generateRandomIndex();
     rightImageIndex = generateRandomIndex();
 
-    while (leftImageElement === rightImageElement || leftImageElement === midImageIndex || midImageIndex ===rightImageElement) {
-       
-        renderThreeImages();
-        
+    while (leftImageIndex === rightImageIndex || leftImageIndex === midImageIndex || midImageIndex === rightImageIndex) {
+
+        //leftImageIndex = generateRandomIndex();
+        midImageIndex = generateRandomIndex();
+        rightImageIndex = generateRandomIndex();
+
 
     }
 
-
+    
+    
     
 
+
     leftImageElement.src = Product.allProduct[leftImageIndex].source;
+    Product.allProduct[leftImageIndex].shown++;
     midImageElement.src = Product.allProduct[midImageIndex].source;
+    Product.allProduct[midImageIndex].shown++;
     rightImageElement.src = Product.allProduct[rightImageIndex].source;
+    Product.allProduct[rightImageIndex].shown++;
 
 
 
@@ -94,19 +105,22 @@ renderThreeImages();
 
 
 
-let imageDiv = document.getElementById('images-div');
+
 
 imageDiv.addEventListener('click', handleUserClick);
+
+
 
 console.log(imageDiv);
 
 
+
 function handleUserClick(event) {
-    console.log(event.target.id);
+    //console.log(event.target.id);
 
-    // add to attempts
-
+   
     userAttemptsCounter++;
+    
     console.log(userAttemptsCounter);
     //userAttemptsCounter++;
 
@@ -119,32 +133,33 @@ function handleUserClick(event) {
             Product.allProduct[rightImageIndex].votes++;
         } else if (event.target.id === 'mid-image') {
             Product.allProduct[midImageIndex].votes++;
-        } else if (event.target.id === 'images-div') {
-            console.log("hi");
+        } else {
+            alert("please click in image !");
+            userAttemptsCounter--;
         }
-        
+
         renderThreeImages();
 
 
-    }else{
+    } else {
 
-       /* let button = document.getElementById("btn")
-        button = document.createElement('button');*/
 
-        let list = document.getElementById('results-list');//addlistner 
+        let button = document.getElementById("button")
+        button.addEventListener('click', shownig);
 
-        let productResult;
+        button.hidden = false;
 
-        for (let i = 0; i < Product.allProduct.length; i++) {
-            productResult = document.createElement('li');
-            list.appendChild(productResult);
-
-            productResult.textContent = `${Product.allProduct[i].name} has ${Product.allProduct[i].votes} votes and was seen ${Product.allProduct[i].shown} times.`
-
+        for(let i = 0 ; i<Product.allProduct.length;i++){
+            votesArr.push(Product.allProduct[i].votes);
+            shownArr.push(Product.allProduct[i].shown);
         }
 
+            
+        
+
+
         imageDiv.removeEventListener('click', handleUserClick);
-    
+        
 
 
 
@@ -153,9 +168,24 @@ function handleUserClick(event) {
 
 
 
-        
-        
-
-        
-
 }
+
+
+
+
+function shownig() {
+
+    let list = document.getElementById('results-list');
+    let productResult;
+
+    for (let i = 0; i < Product.allProduct.length; i++) {
+        productResult = document.createElement('li');
+        list.appendChild(productResult);
+
+        productResult.textContent = `${Product.allProduct[i].name} has ${Product.allProduct[i].votes} votes and was seen ${Product.allProduct[i].shown} times.`
+
+    }
+  
+    button.removeEventListener('click' , shownig);
+
+}   
