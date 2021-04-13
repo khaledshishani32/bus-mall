@@ -1,0 +1,42 @@
+
+body{
+    background-color: whitesmoke;
+}
+
+p{
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    margin-top: 100px;
+    margin-bottom: 150px;
+    color: brown;
+}
+
+#images-div{
+    
+   width: 100%;
+   
+   
+
+}
+
+#left-image{
+    width: 30%;
+    height: 350px;
+    margin: 20px;
+    
+}
+
+
+#mid-image{
+    width: 30%;
+    height: 350px;
+    margin: 20px;
+}
+
+
+#right-image{
+    width: 30%;
+    height: 350px;
+    margin: 20px;
+}
