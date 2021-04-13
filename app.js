@@ -26,6 +26,7 @@ function Product(name, source) {
     this.shown = 0;
 
     Product.allProduct.push(this)
+    namesArr.push(this.name); 
 
 }
 
@@ -33,6 +34,7 @@ function Product(name, source) {
 
 Product.allProduct = [];
 
+  
 
 
 
@@ -62,6 +64,7 @@ new Product('wine-glass', 'img/wine-glass.jpg');
 console.log(Product.allProduct);
 
 
+
 function generateRandomIndex() {
 
     return Math.floor(Math.random() * Product.allProduct.length);
@@ -69,23 +72,36 @@ function generateRandomIndex() {
 
 // console.log(generateRandomIndex());
 
+    let picName=[];
+    //let counter=0;
+
 function renderThreeImages() {
-
-
+ 
     leftImageIndex = generateRandomIndex();
     midImageIndex = generateRandomIndex();
     rightImageIndex = generateRandomIndex();
 
-    while (leftImageIndex === rightImageIndex || leftImageIndex === midImageIndex || midImageIndex === rightImageIndex) {
-
-        //leftImageIndex = generateRandomIndex();
-        midImageIndex = generateRandomIndex();
-        rightImageIndex = generateRandomIndex();
-
-
-    }
-
+  
     
+    while (leftImageIndex === rightImageIndex || leftImageIndex === midImageIndex || midImageIndex === rightImageIndex || picName.includes(leftImageIndex) || picName.includes(midImageIndex) || picName.includes(rightImageIndex)) {
+      
+     
+             
+                leftImageIndex = generateRandomIndex();
+                midImageIndex = generateRandomIndex();
+                rightImageIndex = generateRandomIndex();
+             
+            
+
+        }
+        
+          
+
+
+
+
+
+    console.log(picName);
     
     
 
@@ -98,6 +114,10 @@ function renderThreeImages() {
     Product.allProduct[rightImageIndex].shown++;
 
 
+    picName=[];
+    picName.push(leftImageIndex);
+    picName.push(midImageIndex);
+    picName.push(rightImageIndex);
 
 }
 
@@ -156,11 +176,11 @@ function handleUserClick(event) {
 
             
         
-
+            
 
         imageDiv.removeEventListener('click', handleUserClick);
         
-
+        chart();
 
 
 
@@ -189,3 +209,49 @@ function shownig() {
     button.removeEventListener('click' , shownig);
 
 }   
+
+
+//console.log(votesArr);
+//console.log(shownArr);
+
+
+// chart.js
+function chart() {
+    let ctx = document.getElementById('myChart').getContext('2d');
+    
+    let chart= new Chart(ctx,{
+      // what type is the chart
+     type: 'bar',
+  
+    //  the data for showing
+     data:{
+      //  for the names
+        labels: namesArr,
+        
+        datasets: [
+          {
+          label: 'Product\s votes',
+          data: votesArr,
+          backgroundColor: [
+            "coral",
+          ],
+    
+          borderWidth: 1
+        },
+  
+        {
+          label: 'Product\s shown',
+          data: shownArr,
+          backgroundColor: [
+            'brown',
+          ],
+    
+          borderWidth: 1
+        }
+        
+      ]
+      },
+      options: {}
+    });
+    
+  }
