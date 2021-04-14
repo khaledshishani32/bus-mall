@@ -6,7 +6,7 @@ let leftImageElement = document.getElementById('left-image');
 let midImageElement = document.getElementById('mid-image');
 let rightImageElement = document.getElementById('right-image');
 
-let maxAttempts = 20;
+let maxAttempts = 10;
 let userAttemptsCounter = 0;
 
 
@@ -14,19 +14,22 @@ let leftImageIndex;
 let midImageIndex;
 let rightImageIndex;
 
-let namesArr=[];
-let votesArr=[];
-let shownArr=[];
-
+let namesArr = [];
+let votesArr = [];
+let shownArr = [];
+let prevData= [];
 
 function Product(name, source) {
     this.name = name;
     this.source = source;
-    this.votes = 0;
-    this.shown = 0;
+    this.votes = 0 ;
+    this.shown =0;
 
     Product.allProduct.push(this)
-    namesArr.push(this.name); 
+    namesArr.push(this.name);
+
+
+    
 
 }
 
@@ -34,7 +37,43 @@ function Product(name, source) {
 
 Product.allProduct = [];
 
+
+
+
+
+function updateStorage() {
+    // console.log(JSON);
+    let arrayString=JSON.stringify(Product.allProduct);
   
+    console.log(Product.allProduct);
+    console.log(arrayString);
+    localStorage.setItem('product',arrayString);
+  
+  }
+
+
+
+  function getProductOrders() {
+     
+
+    // get the data from the local storage
+    let data =localStorage.getItem('product');
+    console.log(data);
+  
+    // convert data back into a normal array of objects
+    let productData=JSON.parse(data);
+  
+    console.log(productData);
+  
+    // if the first time we visit the page, there will not be an array of objects inside the local storage so we should handle it here:
+    if (productData !==null) {
+      Product.allProduct=productData;
+    }
+  
+    
+  }
+  
+
 
 
 
@@ -72,39 +111,35 @@ function generateRandomIndex() {
 
 // console.log(generateRandomIndex());
 
-    let picName=[];
-    //let counter=0;
+let picName = [];
+
+
+
+
+
+
+
 
 function renderThreeImages() {
- 
+
     leftImageIndex = generateRandomIndex();
     midImageIndex = generateRandomIndex();
     rightImageIndex = generateRandomIndex();
 
-  
-    
+
+
     while (leftImageIndex === rightImageIndex || leftImageIndex === midImageIndex || midImageIndex === rightImageIndex || picName.includes(leftImageIndex) || picName.includes(midImageIndex) || picName.includes(rightImageIndex)) {
-      
-     
-             
-                leftImageIndex = generateRandomIndex();
-                midImageIndex = generateRandomIndex();
-                rightImageIndex = generateRandomIndex();
-             
-            
-
-        }
-        
-          
 
 
 
+        leftImageIndex = generateRandomIndex();
+        midImageIndex = generateRandomIndex();
+        rightImageIndex = generateRandomIndex();
 
 
+
+    }
     console.log(picName);
-    
-    
-
 
     leftImageElement.src = Product.allProduct[leftImageIndex].source;
     Product.allProduct[leftImageIndex].shown++;
@@ -114,15 +149,30 @@ function renderThreeImages() {
     Product.allProduct[rightImageIndex].shown++;
 
 
-    picName=[];
+    picName = [];
     picName.push(leftImageIndex);
     picName.push(midImageIndex);
     picName.push(rightImageIndex);
+     
+    // Array.prototype.push.apply(Product.allProduct,prevData);
+    //  updateStorage();
+    //   prevData= getProductOrders();
+    //    prevData =  getProductOrders();
+    //    prevData += Product.allProduct;
+      
+
+      
+    
+
+
+    
+ 
+
+    
 
 }
 
 renderThreeImages();
-
 
 
 
@@ -138,9 +188,9 @@ console.log(imageDiv);
 function handleUserClick(event) {
     //console.log(event.target.id);
 
-   
+
     userAttemptsCounter++;
-    
+
     console.log(userAttemptsCounter);
     //userAttemptsCounter++;
 
@@ -164,24 +214,25 @@ function handleUserClick(event) {
     } else {
 
 
-        let button = document.getElementById("button")
-        button.addEventListener('click', shownig);
+        // let button = document.getElementById("button")
+        // button.addEventListener('click', shownig);
 
-        button.hidden = false;
+        // button.hidden = false;
 
-        for(let i = 0 ; i<Product.allProduct.length;i++){
+        for (let i = 0; i < Product.allProduct.length; i++) {
             votesArr.push(Product.allProduct[i].votes);
             shownArr.push(Product.allProduct[i].shown);
         }
 
-            
+
+    
         
-            
 
         imageDiv.removeEventListener('click', handleUserClick);
-        
-        chart();
 
+        chart();
+       
+        updateStorage();
 
 
     }
@@ -205,10 +256,10 @@ function shownig() {
         productResult.textContent = `${Product.allProduct[i].name} has ${Product.allProduct[i].votes} votes and was seen ${Product.allProduct[i].shown} times.`
 
     }
-  
-    button.removeEventListener('click' , shownig);
 
-}   
+    button.removeEventListener('click', shownig);
+
+}
 
 
 //console.log(votesArr);
@@ -218,40 +269,44 @@ function shownig() {
 // chart.js
 function chart() {
     let ctx = document.getElementById('myChart').getContext('2d');
-    
-    let chart= new Chart(ctx,{
-      // what type is the chart
-     type: 'bar',
-  
-    //  the data for showing
-     data:{
-      //  for the names
-        labels: namesArr,
-        
-        datasets: [
-          {
-          label: 'Product\s votes',
-          data: votesArr,
-          backgroundColor: [
-            "coral",
-          ],
-    
-          borderWidth: 1
+
+    let chart = new Chart(ctx, {
+        // what type is the chart
+        type: 'bar',
+
+        //  the data for showing
+        data: {
+            //  for the names
+            labels: namesArr,
+
+            datasets: [
+                {
+                    label: 'Product\s votes',
+                    data: votesArr,
+                    backgroundColor: [
+                        "coral",
+                    ],
+
+                    borderWidth: 1
+                },
+
+                {
+                    label: 'Product\s shown',
+                    data: shownArr,
+                    backgroundColor: [
+                        'brown',
+                    ],
+
+                    borderWidth: 1
+                }
+
+            ]
         },
-  
-        {
-          label: 'Product\s shown',
-          data: shownArr,
-          backgroundColor: [
-            'brown',
-          ],
-    
-          borderWidth: 1
-        }
-        
-      ]
-      },
-      options: {}
+        options: {}
     });
-    
-  }
+
+}
+
+
+
+getProductOrders();
